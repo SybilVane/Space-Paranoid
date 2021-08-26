@@ -158,6 +158,7 @@ const Game = {
 				this.initialCounter = undefined
 				this.initialCounterPowershot = undefined
 				this.initialCounterHeart = undefined
+				this.player.powerShot = false;
 				
 				break;
 		}
