@@ -18,14 +18,18 @@ const Game = {
 	score: 0,
 	MAX_LIVES: 50,
 	lives: undefined,
+	finalboss_lives: 1500,
 	COUNTER_LONG: 60,
 	COUNTER_SHORT: 5,
 	initialCounter: undefined,
+	initialCounterPowershot: undefined,
+	initialCounterHeart: undefined,
 	soundtrack: undefined,
 	collisionSound: undefined,
 	explosionSound: undefined,
 	gameOverSound: undefined,
 	powerupSound: undefined,
+	
 
 	init() {
 		this.canvas = document.getElementById('myCanvas');
@@ -51,6 +55,7 @@ const Game = {
 		this.explosionSound = new Audio('./snd/enemyexp.mp3');
 		this.powerupSound = new Audio('./snd/powerup.mp3');
 		this.gameOverSound = new Audio('./snd/laser.mp3');
+		this.finalboss_lives = 1000;
 
 		this.interval = setInterval(() => {
 			if (this.framesCounter > this.initialCounter) {
@@ -59,15 +64,22 @@ const Game = {
 				this.asteroids.push(new Asteroid(this.ctx, this.width, this.height));
 			} else this.framesCounter++;
 
-			if (this.powershotCounter > 10 * this.FPS) {
+			if (this.powershotCounter > this.initialCounterPowershot) {
 				this.powershotCounter = 0;
 				this.powerShots.push(new Powershot(this.ctx, this.width, this.height));
 			} else this.powershotCounter++;
-
-			if (this.heartCounter > 5 * this.FPS) {
+			if (this.score === 1000)
+				this.finalBoss = new FinalBoss(
+					this.ctx,
+					this.width,
+					this.height,
+				);
+			if (this.heartCounter > this.initialCounterHeart) {
 				this.heartCounter = 0;
 				this.hearts.push(new Heart(this.ctx, this.width, this.height));
+
 			} else this.heartCounter++;
+
 
 
 			this.clear();
@@ -79,10 +91,14 @@ const Game = {
 			this.clearEnemyOutOfCanvas();
 			this.collisionPlayerBullet();
 			this.collisionPlayerHeart();
-			this.collisionPlayerPowershot()
+			this.collisionPlayerPowershot();
 			this.increaseDifficulty();
 			this.deadOrAlive();
 			this.lifeBar();
+			this.collisionPlayerFinalBossBullet();
+			this.collisionPlayerBulletsBoss()
+			if (this.finalBoss) {this.finalBoss.animateSprite(this.framesCounter)}
+			
 
 		}, 1000 / this.FPS);
 	},
@@ -100,16 +116,15 @@ const Game = {
 			this.height,
 			this.keys,
 		);
-			this.finalBoss = new FinalBoss(
-			this.ctx,
-			this.width,
-			this.height,
-		);
+
+
 		this.lives = this.MAX_LIVES;
 		this.initialCounter = this.COUNTER_LONG;
 		this.enemies = [];
 		this.asteroids = [];
 		this.score = 0;
+		this.initialCounterHeart = 5 * this.FPS
+	    this.initialCounterPowershot = 20 * this.FPS
 	},
 
 	scoreCounter() {
@@ -121,6 +136,8 @@ const Game = {
 	},
 
 	increaseDifficulty() {
+	
+
 		switch (true) {
 			case (this.score < 200):
 				this.initialCounter = 55
@@ -137,9 +154,12 @@ const Game = {
 			case (this.score >= 800 && this.score <= 1000):
 				this.initialCounter = 25
 				break;
-			// case (this.score > 1000):
-			// 	this.initialCounter = undefined
-			// 	break;
+			case (this.score > 1000):
+				this.initialCounter = undefined
+				this.initialCounterPowershot = undefined
+				this.initialCounterHeart = undefined
+				
+				break;
 		}
 	},
 
@@ -165,15 +185,16 @@ const Game = {
 
 	},
 
+
 	drawAll() {
 		this.background.draw();
 		this.player.draw();
-		// this.enemies.forEach((enemy) => enemy.draw());
-		// this.asteroids.forEach((asteroid) => asteroid.draw());
-		// this.powerShots.forEach((power) => power.draw());
-		// this.hearts.forEach((power) => power.draw());
-		// this.explosions.forEach((explosion) => explosion.draw());
-		this.finalBoss.draw();
+		this.enemies.forEach((enemy) => enemy.draw());
+		this.asteroids.forEach((asteroid) => asteroid.draw());
+		this.powerShots.forEach((power) => power.draw());
+		this.hearts.forEach((power) => power.draw());
+		this.explosions.forEach((explosion) => explosion.draw());
+		this.finalBoss?.draw();
 
 	},
 
@@ -193,7 +214,7 @@ const Game = {
 				this.player.posX + 10 + this.player.width - 10 > en.posX + 10 &&
 				this.player.posY + 10 < en.posY + 10 + en.height - 10 &&
 				this.player.posY + 10 + this.player.height - 10 > en.posY + 10) {
-				
+
 				this.collisionSound.play();
 				this.lives -= 1;
 			};
@@ -206,7 +227,7 @@ const Game = {
 				this.player.posX + 10 + this.player.width - 10 > asteroid.posX + 10 &&
 				this.player.posY + 10 < asteroid.posY + 10 + asteroid.height - 10 &&
 				this.player.posY + 10 + this.player.height - 10 > asteroid.posY + 10) {
-				
+
 				this.collisionSound.play();
 				this.lives -= 1;
 			};
@@ -224,7 +245,7 @@ const Game = {
 					bullet.posY + 5 + bullet.height - 5 > enemy.posY + 5
 				) {
 
-					 this.explosionSound.play();
+					this.explosionSound.play();
 					this.score += 10;
 					this.enemies.splice(i, 1);
 					let explosion = new Explosion(this.ctx, enemy.posX, enemy.posY, enemy.width, enemy.height)
@@ -265,7 +286,7 @@ const Game = {
 				this.player.posY + 10 < enemyBullet.enemyPosY + enemyBullet.height &&
 				this.player.posY + this.player.height - 5 > enemyBullet.enemyPosY
 			) {
-				
+
 				this.collisionSound.play();
 				this.lives -= 1;
 			}
@@ -279,14 +300,14 @@ const Game = {
 				this.player.posX + 10 + this.player.width - 10 > coffee.posX + 10 &&
 				this.player.posY + 10 < coffee.posY + 10 + coffee.height - 10 &&
 				this.player.posY + 10 + this.player.height - 10 > coffee.posY + 10) {
-				console.log(this.player.powerShot)
 
-				
+
+
 				this.powerupSound.play();
 				this.player.powerShot = true;
 				setTimeout(() => {
-                    this.player.powerShot = false;
-                }, 5000);
+					this.player.powerShot = false;
+				}, 5000);
 				this.powerShots.splice(i, 1)
 				delete coffee
 
@@ -310,6 +331,55 @@ const Game = {
 			};
 		});
 	},
+	collisionPlayerFinalBossBullet() {
+		this.finalBoss?.bullets.forEach((bossBullet) => {
+			if (
+				bossBullet.enemyPosX < this.player.posX + this.player.width - 5 &&
+				bossBullet.enemyPosX + bossBullet.width > this.player.posX + 5 &&
+				this.player.posY + 10 < bossBullet.enemyPosY + bossBullet.height &&
+				this.player.posY + this.player.height - 5 > bossBullet.enemyPosY
+			) {
+				this.collisionSound.play();
+				this.lives -= 1;
+			}
+		});
+	},
+
+	collisionPlayerBulletsBoss() {
+		
+		this.player?.bullets.forEach((bullet) => {
+			if (
+				this.finalBoss &&
+				bullet.posX + 5 < this.finalBoss.posX + 5 + this.finalBoss.width - 5 &&
+				bullet.posX + 5 + bullet.width - 5 > this.finalBoss.posX + 5 &&
+				bullet.posY + 5 < this.finalBoss.posY + 5 + this.finalBoss.height - 5 &&
+				bullet.posY + 5 + bullet.height - 5 > this.finalBoss.posY + 5
+			) {
+
+				this.explosionSound.play();
+				this.finalboss_lives -= 1;
+
+				if (this.finalboss_lives <= 0) {
+					this.player.bullets = []
+					let explosion = new Explosion(this.ctx, this.finalBoss.posX, this.finalBoss.posY, this.finalBoss.width, this.finalBoss.height)
+				this.explosions.push(explosion)
+
+				setTimeout(() => {
+					this.explosions.pop()
+					this.gameWon()
+				}, 50);
+
+				delete this.finalBoss
+
+					
+				}
+				
+				
+
+			}
+		});
+
+	},
 
 	gameOver() {
 		clearInterval(this.interval);
@@ -317,5 +387,14 @@ const Game = {
 		this.gameOverSound.play();
 		this.soundtrack.pause();
 		this.soundtrack.currentTime = 0;
+		delete this.finalBoss
 	},
+	gameWon() {
+        clearInterval(this.interval);
+		reload = true;
+		this.gameOverSound.play();
+		this.soundtrack.pause();
+		this.soundtrack.currentTime = 0;
+
+	}
 }

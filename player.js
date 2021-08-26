@@ -53,19 +53,31 @@ class Player {
       }
     }
 
-    if (this.keys[38] && this.posY >= 10) {
+    if (
+      (this.keys[38] && this.posY >= 10) ||
+      (this.keys[87] && this.posY >= 10)
+    ) {
       //up
       this.posY -= this.velY;
     }
-    if (this.keys[40] && this.posY <= this.gameHeight - this.height - 5) {
+    if (
+      (this.keys[40] && this.posY <= this.gameHeight - this.height - 5) ||
+      (this.keys[83] && this.posY <= this.gameHeight - this.height - 5)
+    ) {
       //down
       this.posY += this.velY;
     }
-    if (this.keys[37] && this.posX >= 5) {
+    if (
+      (this.keys[37] && this.posX >= 5) ||
+      (this.keys[65] && this.posX >= 5)
+    ) {
       //left
       this.posX -= this.velX;
     }
-    if (this.keys[39] && this.posX <= this.gameWidth - this.width - 5) {
+    if (
+      (this.keys[39] && this.posX <= this.gameWidth - this.width - 5) ||
+      (this.keys[68] && this.posX <= this.gameWidth - this.width - 5)
+    ) {
       //right
       this.posX += this.velX;
     }
