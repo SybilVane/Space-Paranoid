@@ -54,7 +54,7 @@ const Game = {
 		this.collisionSound = new Audio('./snd/collision.mp3');
 		this.explosionSound = new Audio('./snd/enemyexp.mp3');
 		this.powerupSound = new Audio('./snd/powerup.mp3');
-		this.gameOverSound = new Audio('./snd/laser.mp3');
+		this.gameOverSound = new Audio('./snd/gameover.mp3');
 		this.finalboss_lives = 1000;
 
 		this.interval = setInterval(() => {
@@ -387,11 +387,13 @@ const Game = {
 		this.gameOverSound.play();
 		this.soundtrack.pause();
 		this.soundtrack.currentTime = 0;
+		
 		delete this.finalBoss
 	},
 	gameWon() {
         clearInterval(this.interval);
 		reload = true;
+		
 		this.gameOverSound.play();
 		this.soundtrack.pause();
 		this.soundtrack.currentTime = 0;
