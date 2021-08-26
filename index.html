@@ -36,6 +36,10 @@
       transform: translate(-50%, -50%);
       text-align: center;
       font-size: 15px;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      align-items: center;
 
     }
 
@@ -46,6 +50,11 @@
       transform: scale(1);
       font-size: 25px;
 
+    }
+
+    #heart {
+      margin-right: 1px;
+      animation: pulse 0.5s infinite;
     }
 
     #myCanvas {
@@ -76,7 +85,8 @@
   </style>
   <div id="preCanvas">
     <div id="space">Space Paranoid</div>
-    <div><br><br><br><br>- press enter -</div>
+    <div><br><br><br>- press enter -</div><br><br>
+    <img id="heart" src="./img/heart.png" height="15" width="15"><img src="./img/powershot.png" height="30" width="30">
   </div>
   <canvas id="myCanvas"></canvas>
 

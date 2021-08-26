@@ -29,9 +29,11 @@ const Game = {
 	explosionSound: undefined,
 	gameOverSound: undefined,
 	powerupSound: undefined,
-	
+	winSound: undefined,
 
 	init() {
+
+
 		this.canvas = document.getElementById('myCanvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.setDimensions();
@@ -41,6 +43,8 @@ const Game = {
 	},
 
 	setDimensions() {
+
+
 		this.width = 450;
 		this.height = 600;
 		this.canvas.width = this.width;
@@ -48,15 +52,18 @@ const Game = {
 	},
 
 	start() {
+
+
 		this.reset();
+
 		this.soundtrack = new Audio('./snd/paranoid.mp3');
 		this.soundtrack.play();
 		this.collisionSound = new Audio('./snd/collision.mp3');
 		this.explosionSound = new Audio('./snd/enemyexp.mp3');
 		this.powerupSound = new Audio('./snd/powerup.mp3');
 		this.gameOverSound = new Audio('./snd/gameover.mp3');
-		this.finalboss_lives = 1000;
-
+		this.winSound = new Audio('./snd/youwin.mp3');
+		
 		this.interval = setInterval(() => {
 			if (this.framesCounter > this.initialCounter) {
 				this.framesCounter = 0;
@@ -81,7 +88,6 @@ const Game = {
 			} else this.heartCounter++;
 
 
-
 			this.clear();
 			this.drawAll();
 			this.scoreCounter()
@@ -97,13 +103,15 @@ const Game = {
 			this.lifeBar();
 			this.collisionPlayerFinalBossBullet();
 			this.collisionPlayerBulletsBoss()
-			if (this.finalBoss) {this.finalBoss.animateSprite(this.framesCounter)}
+			if (this.finalBoss) this.finalBoss.animateSprite(this.framesCounter)
 			
 
 		}, 1000 / this.FPS);
 	},
 
 	reset() {
+
+
 		this.background = new Background(
 			this.ctx,
 			this.width,
@@ -128,6 +136,8 @@ const Game = {
 	},
 
 	scoreCounter() {
+
+
 		this.ctx.font = "30px 'Press Start 2P'";
 		this.ctx.textAlign = 'right';
 		this.ctx.fillStyle = 'white';
@@ -188,6 +198,8 @@ const Game = {
 
 
 	drawAll() {
+
+
 		this.background.draw();
 		this.player.draw();
 		this.enemies.forEach((enemy) => enemy.draw());
@@ -200,16 +212,22 @@ const Game = {
 	},
 
 	clear() {
+
+
 		this.ctx.clearRect(0, 0, this.width, this.height);
 	},
 
 	deadOrAlive() {
+
+
 		if (this.lives <= 0) this.gameOver()
 	},
 
 
 
 	collisionPlayerEnemy() {
+
+
 		this.enemies.forEach((en) => {
 			if (this.player.posX + 10 < en.posX + 10 + en.width - 10 &&
 				this.player.posX + 10 + this.player.width - 10 > en.posX + 10 &&
@@ -223,6 +241,8 @@ const Game = {
 	},
 
 	collisionPlayerAsteroid() {
+
+
 		this.asteroids.forEach((asteroid) => {
 			if (this.player.posX + 10 < asteroid.posX + 10 + asteroid.width - 10 &&
 				this.player.posX + 10 + this.player.width - 10 > asteroid.posX + 10 &&
@@ -237,6 +257,8 @@ const Game = {
 
 
 	collisionBulletsEnemies() {
+
+
 		this.player.bullets.forEach((bullet) => {
 			this.enemies.forEach((enemy, i) => {
 				if (
@@ -265,6 +287,7 @@ const Game = {
 
 	clearEnemyOutOfCanvas() {
 
+
 		this.enemies.forEach((enemy, i) => {
 			if (enemy.posY - enemy.height * 2 > this.height || enemy.posY + enemy.height * 2 < 0 || enemy.posX > this.width || enemy.posX < 0) {
 				this.enemies.splice(i, 1)
@@ -280,6 +303,8 @@ const Game = {
 	},
 
 	collisionPlayerBullet() {
+
+
 		this.enemies.forEach(enemy => enemy.bullets.forEach((enemyBullet) => {
 			if (
 				enemyBullet.enemyPosX < this.player.posX + this.player.width - 5 &&
@@ -296,12 +321,13 @@ const Game = {
 
 
 	collisionPlayerPowershot() {
+
+
 		this.powerShots.forEach((coffee, i) => {
 			if (this.player.posX + 10 < coffee.posX + 10 + coffee.width - 10 &&
 				this.player.posX + 10 + this.player.width - 10 > coffee.posX + 10 &&
 				this.player.posY + 10 < coffee.posY + 10 + coffee.height - 10 &&
 				this.player.posY + 10 + this.player.height - 10 > coffee.posY + 10) {
-
 
 
 				this.powerupSound.play();
@@ -317,6 +343,8 @@ const Game = {
 	},
 
 	collisionPlayerHeart() {
+
+
 		this.hearts.forEach((heart, i) => {
 			if (this.player.posX + 10 < heart.posX + 10 + heart.width - 10 &&
 				this.player.posX + 10 + this.player.width - 10 > heart.posX + 10 &&
@@ -333,6 +361,8 @@ const Game = {
 		});
 	},
 	collisionPlayerFinalBossBullet() {
+
+
 		this.finalBoss?.bullets.forEach((bossBullet) => {
 			if (
 				bossBullet.enemyPosX < this.player.posX + this.player.width - 5 &&
@@ -347,6 +377,7 @@ const Game = {
 	},
 
 	collisionPlayerBulletsBoss() {
+
 		
 		this.player?.bullets.forEach((bullet) => {
 			if (
@@ -374,30 +405,48 @@ const Game = {
 
 					
 				}
-				
-				
-
 			}
 		});
-
 	},
 
 	gameOver() {
+
+
 		clearInterval(this.interval);
 		reload = true;
-		this.gameOverSound.play();
+		
 		this.soundtrack.pause();
 		this.soundtrack.currentTime = 0;
+		this.gameOverSound.play();
 		
 		delete this.finalBoss
+		this.ctx.textAlign = 'center';
+		this.ctx.fillStyle = 'white';
+		this.ctx.fillText('YOU LOSE!', 225, 280)
+
+		setTimeout(() => {
+		this.ctx.font = "30px 'Press Start 2P'";
+		this.ctx.textAlign = 'center';
+		this.ctx.fillStyle = 'white';
+		this.ctx.fillText('Try again?', 225, 320)
+		}, 1500);
+		
+		
 	},
+
 	gameWon() {
+
+
         clearInterval(this.interval);
 		reload = true;
-		
-		this.gameOverSound.play();
+		this.winSound.play()
 		this.soundtrack.pause();
 		this.soundtrack.currentTime = 0;
+		
+		this.ctx.font = "30px 'Press Start 2P'";
+		this.ctx.textAlign = 'center';
+		this.ctx.fillStyle = 'white';
+		this.ctx.fillText('YOU WIN!', 225, 300)
 
 	}
 }

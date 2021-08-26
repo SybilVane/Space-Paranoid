@@ -29,13 +29,7 @@ class FinalBoss {
   }
 
   draw() {
-    // this.ctx.drawImage(
-    //   this.image,
-    //   this.posX,
-    //   this.posY,
-    //   this.width,
-    //   this.height
-    // );
+    
     this.moving();
     this.bullets.forEach((bullet) => {
       bullet.draw();
