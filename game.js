@@ -122,7 +122,7 @@ const Game = {
 		this.initialCounter = this.COUNTER_LONG;
 		this.enemies = [];
 		this.asteroids = [];
-		this.score = 950;
+		this.score = 0;
 		this.initialCounterHeart = 10 * this.FPS
 	    this.initialCounterPowershot = 20 * this.FPS
 	},
