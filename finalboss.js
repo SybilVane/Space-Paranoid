@@ -15,7 +15,7 @@ class FinalBoss {
 
     this.posX = 20;
     this.posY = 20;
-    this.framesPerShot = 30;
+    this.framesPerShot = 20;
     this.lastShotFrame = 0;
 
     this.velY = 1;

@@ -122,8 +122,8 @@ const Game = {
 		this.initialCounter = this.COUNTER_LONG;
 		this.enemies = [];
 		this.asteroids = [];
-		this.score = 0;
-		this.initialCounterHeart = 5 * this.FPS
+		this.score = 950;
+		this.initialCounterHeart = 10 * this.FPS
 	    this.initialCounterPowershot = 20 * this.FPS
 	},
 
@@ -143,16 +143,16 @@ const Game = {
 				this.initialCounter = 55
 				break;
 			case (this.score >= 200 && this.score <= 300):
-				this.initialCounter = 50
+				this.initialCounter = 45
 				break;
 			case (this.score >= 300 && this.score <= 500):
-				this.initialCounter = 45
+				this.initialCounter = 35
 				break;
 			case (this.score >= 500 && this.score <= 800):
 				this.initialCounter = 30
 				break;
 			case (this.score >= 800 && this.score <= 1000):
-				this.initialCounter = 25
+				this.initialCounter = 20
 				break;
 			case (this.score > 1000):
 				this.initialCounter = undefined
@@ -350,10 +350,10 @@ const Game = {
 		this.player?.bullets.forEach((bullet) => {
 			if (
 				this.finalBoss &&
-				bullet.posX + 5 < this.finalBoss.posX + 5 + this.finalBoss.width - 5 &&
-				bullet.posX + 5 + bullet.width - 5 > this.finalBoss.posX + 5 &&
-				bullet.posY + 5 < this.finalBoss.posY + 5 + this.finalBoss.height - 5 &&
-				bullet.posY + 5 + bullet.height - 5 > this.finalBoss.posY + 5
+				bullet.posX < this.finalBoss.posX  + this.finalBoss.width  &&
+				bullet.posX + bullet.width > this.finalBoss.posX  &&
+				bullet.posY < this.finalBoss.posY  + this.finalBoss.height &&
+				bullet.posY + bullet.height  > this.finalBoss.posY 
 			) {
 
 				this.explosionSound.play();

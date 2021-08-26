@@ -4,7 +4,7 @@ class Explosion {
     this.width = width;
     this.height = height;
     this.image = new Image();
-    this.image.src = './img/explosion.png';
+    this.image.src = './img/explosion2.png';
     this.posX = posX;
     this.posY = posY;
   }

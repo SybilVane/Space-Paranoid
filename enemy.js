@@ -1,7 +1,7 @@
 class Enemy {
   constructor(ctx, gameW, gameH) {
     this.ctx = ctx;
-    this.framesPerShot = 50;
+    this.framesPerShot = 40;
     this.lastShotFrame = 0;
     this.gameW = gameW;
     this.gameH = gameH;
