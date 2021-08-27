@@ -17,8 +17,9 @@ const Game = {
 	heartCounter: 0,
 	score: 0,
 	MAX_LIVES: 50,
+	MAX_LIVES_BOSS: 1500,
 	lives: undefined,
-	finalboss_lives: 1500,
+	finalboss_lives: undefined,
 	COUNTER_LONG: 60,
 	COUNTER_SHORT: 5,
 	initialCounter: undefined,
@@ -33,11 +34,11 @@ const Game = {
 
 	init() {
 
-
+		// window.ongamepadconnected = () => this.player.gamepadConnected = true
+		// window.ongamepaddisconnected
 		this.canvas = document.getElementById('myCanvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.setDimensions();
-
 		this.start();
 
 	},
@@ -57,12 +58,16 @@ const Game = {
 		this.reset();
 
 		this.soundtrack = new Audio('./snd/paranoid.mp3');
+		this.soundtrack.volume = 0.2
 		this.soundtrack.play();
 		this.collisionSound = new Audio('./snd/collision.mp3');
 		this.explosionSound = new Audio('./snd/enemyexp.mp3');
 		this.powerupSound = new Audio('./snd/powerup.mp3');
 		this.gameOverSound = new Audio('./snd/gameover.mp3');
+		
 		this.winSound = new Audio('./snd/youwin.mp3');
+
+		
 		
 		this.interval = setInterval(() => {
 			if (this.framesCounter > this.initialCounter) {
@@ -127,6 +132,7 @@ const Game = {
 
 
 		this.lives = this.MAX_LIVES;
+		this.finalboss_lives = this.MAX_LIVES_BOSS
 		this.initialCounter = this.COUNTER_LONG;
 		this.enemies = [];
 		this.asteroids = [];
@@ -169,6 +175,7 @@ const Game = {
 				this.initialCounterPowershot = undefined
 				this.initialCounterHeart = undefined
 				this.player.powerShot = false;
+				this.powerShots = []
 				
 				break;
 		}
@@ -395,13 +402,13 @@ const Game = {
 					this.player.bullets = []
 					let explosion = new Explosion(this.ctx, this.finalBoss.posX, this.finalBoss.posY, this.finalBoss.width, this.finalBoss.height)
 				this.explosions.push(explosion)
-
+delete this.finalBoss
 				setTimeout(() => {
 					this.explosions.pop()
 					this.gameWon()
 				}, 50);
 
-				delete this.finalBoss
+				
 
 					
 				}
@@ -418,6 +425,7 @@ const Game = {
 		this.soundtrack.pause();
 		this.soundtrack.currentTime = 0;
 		this.gameOverSound.play();
+		
 		
 		delete this.finalBoss
 		this.ctx.textAlign = 'center';
