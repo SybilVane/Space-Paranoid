@@ -12,7 +12,7 @@ You can try it out here:
 https://sybilvane.github.io/Space-Paranoid/ <--- Sound on! 🔊
 
 - Press enter to start
-- Move around with arrow buttons 🎮 (or w-a-s-d for real gamers 😎)
+- Move around with arrow keys 🎮 (or w-a-s-d for real gamers 😎)
 - Press spacebar to shoot and destroy aliens
 - Avoid asteroids!
 - Power-ups (☕ & ♥ ) will randomly appear on the screen
