@@ -20,4 +20,7 @@ https://sybilvane.github.io/Space-Paranoid/ <--- Sound on! 🔊
 
 Any feedback, comment, "Hello, I played your game and I liked it!" is more than welcome! 😺
 
-Sybil Vane
+    
+## Authors
+- [@SybilVane](https://github.com/SybilVane)
+- [@Fede](https://github.com/fede1712)
