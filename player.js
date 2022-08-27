@@ -20,6 +20,12 @@ class Player {
     this.velX = 5;
 
     this.keys = [];
+    this.touchKeys = new Set();
+    this.touchY = '';
+    this.touchX = '';
+    this.touchThresholdY = 2;
+    this.touchThresholdX = 2;
+
     this.gamepadConnected = navigator.getGamepads()[0];
     this.gamepadA = undefined;
 
@@ -27,6 +33,7 @@ class Player {
     this.powerShot = false;
 
     this.setListeners();
+    this.setTouchListeners();
   }
 
   draw() {
@@ -55,39 +62,43 @@ class Player {
 
     if (
       (this.keys[38] && this.posY >= 10) ||
-      (this.keys[87] && this.posY >= 10)
+      (this.keys[87] && this.posY >= 10) ||
+        (this.touchKeys.has('swipe up') && this.posY >= 10)
     ) {
       //up
       this.posY -= this.velY;
     }
     if (
       (this.keys[40] && this.posY <= this.gameHeight - this.height - 5) ||
-      (this.keys[83] && this.posY <= this.gameHeight - this.height - 5)
+      (this.keys[83] && this.posY <= this.gameHeight - this.height - 5) ||
+        (this.touchKeys.has('swipe down') && this.posY <= this.gameHeight - this.height - 5)
     ) {
       //down
       this.posY += this.velY;
     }
     if (
       (this.keys[37] && this.posX >= 5) ||
-      (this.keys[65] && this.posX >= 5)
+      (this.keys[65] && this.posX >= 5) ||
+        (this.touchKeys.has('swipe left') && this.posX >= 5)
     ) {
       //left
       this.posX -= this.velX;
     }
     if (
       (this.keys[39] && this.posX <= this.gameWidth - this.width - 5) ||
-      (this.keys[68] && this.posX <= this.gameWidth - this.width - 5)
+      (this.keys[68] && this.posX <= this.gameWidth - this.width - 5) ||
+        (this.touchKeys.has('swipe right') && this.posX <= this.gameWidth - this.width - 5)
     ) {
       //right
       this.posX += this.velX;
     }
 
     if (this.powerShot === false) {
-      if (this.keys[32] || this.keys[1]) this.shoot();
+      if (this.keys[32] || this.keys[1] || this.touchKeys.size > 0) this.shoot();
     }
 
     if (this.powerShot === true) {
-      if (this.keys[32] || this.keys[1]) this.powerShoot();
+      if (this.keys[32] || this.keys[1] || this.touchKeys.size > 0) this.powerShoot();
     }
   }
   shoot() {
@@ -121,6 +132,44 @@ class Player {
     document.addEventListener('keyup', (e) => {
       this.lastShotFrame = 30;
       delete this.keys[e.keyCode];
+    });
+  }
+
+  setTouchListeners() {
+    window.addEventListener('touchstart', (e) => {
+      this.touchY = e.changedTouches[0].pageY;
+      this.touchX = e.changedTouches[0].pageX;
+    });
+    window.addEventListener('touchmove', (e) => {
+      const swipeDistanceY = e.changedTouches[0].pageY - this.touchY;
+      const swipeDistanceX = e.changedTouches[0].pageX - this.touchX;
+      if (
+          swipeDistanceX < -this.touchThresholdX &&
+          !this.touchKeys.has('swipe left')
+      )
+        this.touchKeys.add('swipe left');
+      else if (
+          swipeDistanceX > this.touchThresholdX &&
+          !this.touchKeys.has('swipe right')
+      )
+        this.touchKeys.add('swipe right');
+      else if (
+          swipeDistanceY < -this.touchThresholdY &&
+          !this.touchKeys.has('swipe up')
+      )
+        this.touchKeys.add('swipe up');
+      else if (
+          swipeDistanceY > this.touchThresholdY &&
+          !this.touchKeys.has('swipe down')
+      ) {
+        this.touchKeys.add('swipe down');
+      }
+    });
+    window.addEventListener('touchend', () => {
+      this.touchKeys.delete('swipe up');
+      this.touchKeys.delete('swipe down');
+      this.touchKeys.delete('swipe left');
+      this.touchKeys.delete('swipe right');
     });
   }
 }
