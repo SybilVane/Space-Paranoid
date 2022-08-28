@@ -15,7 +15,6 @@ window.onload = () => {
 
     document.addEventListener('touchstart', (e) => {
        if (e.changedTouches[0].pageY) loadOnce();
-
     });
 
 };
