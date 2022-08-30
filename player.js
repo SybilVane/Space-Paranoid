@@ -21,11 +21,8 @@ class Player {
 
         this.keys = [];
         this.usingTouch = false;
-        this.touchKeys = new Set();
         this.touchY = '';
         this.touchX = '';
-        this.touchThresholdY = 0;
-        this.touchThresholdX = 0;
 
         this.gamepadConnected = navigator.getGamepads()[0];
         this.gamepadA = undefined;
@@ -53,10 +50,6 @@ class Player {
 
     move() {
         if (this.keys.length > 0) this.usingTouch = false;
-        if (this.touchKeys.size > 0) {
-            this.usingTouch = true;
-            this.framesPerShot = 15
-        }
 
         if (this.gamepadConnected) {
             this.gamepadA = navigator.getGamepads()[0].buttons[0].pressed;
@@ -69,36 +62,36 @@ class Player {
 
         if (
             (this.keys[38] && this.posY >= 10) ||
-            (this.keys[87] && this.posY >= 10) ||
-            (this.touchKeys.has('swipe up') && this.posY >= 10)
+            (this.keys[87] && this.posY >= 10)
+
         ) {
             //up
             this.posY -= this.velY;
         }
         if (
             (this.keys[40] && this.posY <= this.gameHeight - this.height - 5) ||
-            (this.keys[83] && this.posY <= this.gameHeight - this.height - 5) ||
-            (this.touchKeys.has('swipe down') && this.posY <= this.gameHeight - this.height - 5)
+            (this.keys[83] && this.posY <= this.gameHeight - this.height - 5)
+
         ) {
             //down
             this.posY += this.velY;
         }
         if (
             (this.keys[37] && this.posX >= 5) ||
-            (this.keys[65] && this.posX >= 5) ||
-            (this.touchKeys.has('swipe left') && this.posX >= 5)
+            (this.keys[65] && this.posX >= 5)
         ) {
             //left
             this.posX -= this.velX;
         }
         if (
             (this.keys[39] && this.posX <= this.gameWidth - this.width - 5) ||
-            (this.keys[68] && this.posX <= this.gameWidth - this.width - 5) ||
-            (this.touchKeys.has('swipe right') && this.posX <= this.gameWidth - this.width - 5)
+            (this.keys[68] && this.posX <= this.gameWidth - this.width - 5)
         ) {
             //right
             this.posX += this.velX;
         }
+
+
 
         if (this.powerShot === false) {
             if (this.keys[32] || this.keys[1] || this.usingTouch) this.shoot();
@@ -147,38 +140,25 @@ class Player {
         window.addEventListener('touchstart', (e) => {
             this.touchY = e.changedTouches[0].pageY;
             this.touchX = e.changedTouches[0].pageX;
-
         });
         window.addEventListener('touchmove', (e) => {
-            const swipeDistanceY = e.changedTouches[0].pageY - this.touchY;
-            const swipeDistanceX = e.changedTouches[0].pageX - this.touchX;
-            if (
-                swipeDistanceX < -this.touchThresholdX &&
-                !this.touchKeys.has('swipe left')
-            )
-                this.touchKeys.add('swipe left');
-            if (
-                swipeDistanceX > this.touchThresholdX &&
-                !this.touchKeys.has('swipe right')
-            )
-                this.touchKeys.add('swipe right');
-            if (
-                swipeDistanceY < -this.touchThresholdY &&
-                !this.touchKeys.has('swipe up')
-            )
-                this.touchKeys.add('swipe up');
-            if (
-                swipeDistanceY > this.touchThresholdY &&
-                !this.touchKeys.has('swipe down')
-            ) {
-                this.touchKeys.add('swipe down');
+
+            if (e) {
+                this.usingTouch = true;
+                this.framesPerShot = 15
+            }
+            const middleX = this.posX + 15
+            const middleY = this.posY + 15
+
+            if ((this.touchX >= middleX  || this.touchX <= middleX) && (this.touchY >= middleY || this.touchY <= middleY))
+            {
+                this.posX = e.changedTouches[0].pageX - 75
+                this.posY = e.changedTouches[0].pageY - 65
             }
         });
-        window.addEventListener('touchend', () => {
-            this.touchKeys.delete('swipe up');
-            this.touchKeys.delete('swipe down');
-            this.touchKeys.delete('swipe left');
-            this.touchKeys.delete('swipe right');
+        window.addEventListener('touchend', (e) => {
+            this.touchY = e.changedTouches[0].pageY;
+            this.touchX = e.changedTouches[0].pageX;
         });
     }
 }
