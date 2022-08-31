@@ -142,19 +142,13 @@ class Player {
             this.touchX = e.changedTouches[0].pageX;
         });
         window.addEventListener('touchmove', (e) => {
-
+console.log(e.changedTouches)
             if (e) {
                 this.usingTouch = true;
                 this.framesPerShot = 15
             }
-            const middleX = this.posX + 15
-            const middleY = this.posY + 15
-
-            if ((this.touchX >= middleX  || this.touchX <= middleX) && (this.touchY >= middleY || this.touchY <= middleY))
-            {
-                this.posX = e.changedTouches[0].pageX - 75
-                this.posY = e.changedTouches[0].pageY - 65
-            }
+                this.posX = e.changedTouches[0].pageX
+                this.posY = e.changedTouches[0].pageY
         });
         window.addEventListener('touchend', (e) => {
             this.touchY = e.changedTouches[0].pageY;
